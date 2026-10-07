@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/ ./backend/
 COPY public/ ./public/
 
-# Set environment defaults
+# Set environment defaults (PORT fallback to 8000 if not supplied by cloud host)
 ENV PORT=8000 \
     PYTHONUNBUFFERED=1 \
     STORAGE_DIR=/app/storage \
@@ -30,12 +30,12 @@ ENV PORT=8000 \
 # Create storage directories
 RUN mkdir -p /app/storage/uploads /app/storage/outputs
 
-# Expose container port
-EXPOSE 8000
+# Informational exposed ports
+EXPOSE 8000 10000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+    CMD curl -f http://localhost:${PORT:-8000}/health || exit 1
 
-# Start FastAPI application
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start FastAPI application dynamically bound to $PORT supplied by Render/Host
+CMD sh -c "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}"
