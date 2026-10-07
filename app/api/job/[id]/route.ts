@@ -23,7 +23,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(job)}\n\n`));
 
         if (job.status === "completed" || job.status === "failed") {
-          controller.close();
+          try {
+            controller.close();
+          } catch (_) {}
           return;
         }
 
@@ -34,7 +36,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
             if (updatedJob.status === "completed" || updatedJob.status === "failed") {
               isClosed = true;
               unsubscribe();
-              controller.close();
+              try {
+                controller.close();
+              } catch (_) {}
             }
           } catch (e) {
             isClosed = true;
