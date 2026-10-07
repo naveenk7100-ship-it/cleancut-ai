@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.env*
+storage
+public/uploads
+public/outputs
+*.pyc
+__pycache__
+.pytest_cache
+.vscode
+.idea
