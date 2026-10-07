@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: cleancut-ai-backend
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: ALLOWED_ORIGINS
+        value: "https://cleancut-ai-ebon.vercel.app,https://cleancut-ai.vercel.app,http://localhost:3000"
+      - key: MAX_UPLOAD_MB
+        value: "500"
+      - key: MAX_CONCURRENT_JOBS
+        value: "2"
+      - key: PYTHONUNBUFFERED
+        value: "1"
